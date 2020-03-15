@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -98,14 +100,25 @@ public class Main {
         instantiatePeriodLinks();
         instantiateLinkQueue();
 
-        while (!linkQueue.isEmpty()) {
-            QueueElement e = linkQueue.remove();
+        int currentTime;
+        int nextMeetingTime = LocalDateTime.parse(linkQueue.element().time, TIME_FORMATTER).toLocalTime().toSecondOfDay();
 
-            LocalDateTime time = LocalDateTime.parse(e.time, TIME_FORMATTER);
-            System.out.println(time.getHour());
-            System.out.println(time.getMinute());
-            System.out.println(time.getSecond());
-            System.out.println();
+        while (!linkQueue.isEmpty()) {
+            currentTime = LocalTime.now().toSecondOfDay();
+
+            if (Math.abs(currentTime - nextMeetingTime) < 60) {
+                try {
+                    String link = linkQueue.remove().link;
+                    (new ProcessBuilder()).command("cmd.exe", "/c", "start Chrome " + link).start().waitFor();
+
+                    if (!linkQueue.isEmpty())
+                        nextMeetingTime = LocalDateTime.parse(linkQueue.element().time, TIME_FORMATTER).toLocalTime().toSecondOfDay();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+        System.exit(0);
     }
 }
