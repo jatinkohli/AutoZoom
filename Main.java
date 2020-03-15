@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +24,7 @@ import org.json.JSONObject;
  */
 public class Main {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS'Z'");
-    private static final int OFFSET = 60; //Time (seconds) to join a meeting before the scheduled time
+    private static final int OFFSET = 60; // Time (seconds) to join a meeting before the scheduled time
 
     private static Map<String, String> periodLinks;
     private static Queue<QueueElement> linkQueue;
@@ -99,6 +97,8 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println(schedule);
 
         return schedule;
     }
