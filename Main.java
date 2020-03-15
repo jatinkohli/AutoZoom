@@ -1,4 +1,7 @@
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
@@ -10,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Scanner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +26,7 @@ import org.json.JSONObject;
  */
 public class Main {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private static final int OFFSET = 60; //Time (seconds) to join a meeting before the scheduled time
 
     private static Map<String, String> periodLinks;
     private static Queue<QueueElement> linkQueue;
@@ -32,13 +37,18 @@ public class Main {
     private static void instantiatePeriodLinks() {
         periodLinks = new HashMap<String, String>();
 
-        periodLinks.put("P1", "https://harker.zoom.us/wc/join/5408748374");
-        periodLinks.put("P2", "https://harker.zoom.us/wc/join/8699692694");
-        periodLinks.put("P3", "https://harker.zoom.us/wc/join/4328893126");
-        periodLinks.put("P5", "https://harker.zoom.us/wc/join/6614123433");
-        periodLinks.put("P6", "https://harker.zoom.us/wc/join/8904802894");
-        periodLinks.put("P7", "https://harker.zoom.us/wc/join/9655066157");
-        periodLinks.put("Advisory", "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+        try {
+            Scanner linkScanner = new Scanner(new File("links.txt"));
+
+            while (linkScanner.hasNextLine()) {
+                String key = linkScanner.next();
+                String value = linkScanner.next();
+
+                periodLinks.put(key, value);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -51,16 +61,17 @@ public class Main {
             Iterator<Object> scheduleIterator = (new JSONObject(getScheduleJson())).getJSONArray("schedule").iterator();
 
             while (scheduleIterator.hasNext()) {
-                JSONObject period = (JSONObject)scheduleIterator.next();
-                
+                JSONObject period = (JSONObject) scheduleIterator.next();
+
                 String time = period.getString("start");
                 String link = periodLinks.get(period.getString("name"));
 
-                if (link != null) 
+                if (link != null)
                     linkQueue.add(new QueueElement(time, link));
             }
         } catch (JSONException e) {
             System.out.println("No Schedule found for today");
+            System.exit(-1);
         }
     }
 
@@ -71,9 +82,8 @@ public class Main {
         LocalDate date = LocalDate.now();
 
         String getScheduleCommand = String.format(
-            "curl --request GET --url https://bell.dev.harker.org/api/schedule --header \"Content-Type: application/x-www-form-urlencoded\" --data month=%s --data day=%s --data year=%s",
-            date.getMonthValue(), date.getDayOfMonth(), date.getYear()
-        );
+                "curl --request GET --url https://bell.dev.harker.org/api/schedule --header \"Content-Type: application/x-www-form-urlencoded\" --data month=%s --data day=%s --data year=%s",
+                date.getMonthValue(), date.getDayOfMonth(), date.getYear());
 
         String schedule = null;
 
@@ -105,17 +115,19 @@ public class Main {
 
         while (!linkQueue.isEmpty()) {
             currentTime = LocalTime.now().toSecondOfDay();
+            int timeDiff = nextMeetingTime - currentTime - OFFSET;
 
-            if (Math.abs(currentTime - nextMeetingTime) < 60) {
-                try {
-                    String link = linkQueue.remove().link;
-                    (new ProcessBuilder()).command("cmd.exe", "/c", "start Chrome " + link).start().waitFor();
+            try {
+                if (timeDiff > 0)
+                    Thread.sleep((long)(timeDiff * 1000));
 
-                    if (!linkQueue.isEmpty())
-                        nextMeetingTime = LocalDateTime.parse(linkQueue.element().time, TIME_FORMATTER).toLocalTime().toSecondOfDay();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                String link = linkQueue.remove().link;
+                (new ProcessBuilder()).command("cmd.exe", "/c", "start Chrome " + link).start().waitFor();
+
+                if (!linkQueue.isEmpty())
+                    nextMeetingTime = LocalDateTime.parse(linkQueue.element().time, TIME_FORMATTER).toLocalTime().toSecondOfDay();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
