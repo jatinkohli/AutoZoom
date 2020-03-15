@@ -72,7 +72,7 @@ public class Main {
 
         String getScheduleCommand = String.format(
             "curl --request GET --url https://bell.dev.harker.org/api/schedule --header \"Content-Type: application/x-www-form-urlencoded\" --data month=%s --data day=%s --data year=%s",
-            date.getMonthValue(), date.getDayOfMonth() + 2, date.getYear()
+            date.getMonthValue(), date.getDayOfMonth(), date.getYear()
         );
 
         String schedule = null;
