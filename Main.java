@@ -24,7 +24,7 @@ import org.json.JSONObject;
  */
 public class Main {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS'Z'");
-    private static final int OFFSET = 60; // Time (seconds) to join a meeting before the scheduled time
+    private static final int OFFSET = 120; // Time (seconds) to join a meeting before the scheduled time
 
     private static Map<String, String> periodLinks;
     private static Queue<QueueElement> linkQueue;
@@ -124,7 +124,8 @@ public class Main {
                     Thread.sleep((long)(timeDiff * 1000));
 
                 String link = linkQueue.remove().link;
-                (new ProcessBuilder()).command("cmd.exe", "/c", "start Chrome " + link).start().waitFor();
+                if (timeDiff >= 0)
+                    (new ProcessBuilder()).command("cmd.exe", "/c", "start Chrome " + link).start().waitFor();
 
                 if (!linkQueue.isEmpty())
                     nextMeetingTime = LocalDateTime.parse(linkQueue.element().time, TIME_FORMATTER).toLocalTime().toSecondOfDay();
