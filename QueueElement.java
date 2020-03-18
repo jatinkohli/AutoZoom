@@ -12,4 +12,9 @@ public class QueueElement {
         this.time = time;
         this.link = link;
     }
+
+    @Override
+    public String toString() {
+        return time + " " + link;
+    }
 }

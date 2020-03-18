@@ -78,8 +78,8 @@ public class Main {
      */
     private static String getScheduleJson() {
         LocalDate date = LocalDate.now();
-        System.out.println(date);
-        System.out.println(LocalTime.now());
+        System.out.println("Current Date: " + date);
+        System.out.println("Current Time: " + LocalTime.now());
 
         String getScheduleCommand = String.format(
                 "curl --request GET --url https://bell.dev.harker.org/api/schedule --header \"Content-Type: application/x-www-form-urlencoded\" --data month=%s --data day=%s --data year=%s",
@@ -100,7 +100,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println(schedule);
+        System.out.println(schedule + "\r\n");
 
         return schedule;
     }
