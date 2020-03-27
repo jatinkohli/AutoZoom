@@ -1,5 +1,4 @@
-.vscode/settings.json
 **.class
 jar/
 AutoZoom.jar
-.vscode/launch.json
+.vscode/**
