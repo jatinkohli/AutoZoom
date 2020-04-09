@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -72,6 +73,10 @@ public class Main {
             System.out.println("No Schedule found for today");
             System.exit(-1);
         }
+
+        // DayOfWeek day = LocalDate.now().getDayOfWeek();
+        // if (day == DayOfWeek.WEDNESDAY || day == DayOfWeek.FRIDAY) //athletic pants time
+        //     linkQueue.add(new QueueElement("2020-04-20T15:15:00.000Z", periodLinks.get("Fencing")));
     }
 
     /**
