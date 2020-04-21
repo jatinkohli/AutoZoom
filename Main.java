@@ -72,6 +72,9 @@ public class Main {
         } catch (JSONException e) {
             System.out.println("No Schedule found for today");
             System.exit(-1);
+        } catch (NullPointerException e1) {
+            System.out.println("HarkerDev servers broke again :(");
+            System.exit(-2);
         }
 
         // DayOfWeek day = LocalDate.now().getDayOfWeek();
