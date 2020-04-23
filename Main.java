@@ -93,7 +93,7 @@ public class Main {
     private static String getScheduleJson() {
         LocalDate date = LocalDate.now();
         System.out.println("Current Date: " + date);
-        System.out.println("Current Time: " + LocalTime.now());
+        System.out.println("Current Time: " + LocalTime.now() + "\r\n");
 
         String getScheduleCommand = String.format(
                 "curl --request GET --url https://bell.dev.harker.org/api/schedule --header \"Content-Type: application/x-www-form-urlencoded\" --data month=%s --data day=%s --data year=%s",
@@ -114,7 +114,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println(schedule + "\r\n");
+        System.out.println("API result: " + schedule + "\r\n");
 
         return schedule;
     }
@@ -130,6 +130,7 @@ public class Main {
         int nextMeetingTime = -1;
 
         boolean isWindowsOS = System.getProperty("os.name").toLowerCase().indexOf("win") != -1;
+        System.out.println("OS: " + System.getProperty("os.name"));
 
         while (!linkQueue.isEmpty()) {
             currentTime = LocalTime.now().toSecondOfDay();
@@ -138,8 +139,10 @@ public class Main {
             int timeDiff = nextMeetingTime - currentTime - OFFSET;
 
             try {
-                if (timeDiff > 0)
+                if (timeDiff > 0) {
+                    System.out.println("Waiting for meeting to start...");
                     Thread.sleep((long)(timeDiff * 1000));
+                }
 
                 String link = linkQueue.remove().link;
 
@@ -148,6 +151,9 @@ public class Main {
 
                     (new ProcessBuilder()).command(command.split(" ")).start().waitFor();
                 }
+
+                System.out.println("Opened link for next meeting.");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
