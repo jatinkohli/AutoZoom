@@ -147,10 +147,10 @@ public class Main {
                 String link = linkQueue.remove().link;
 
                 if (timeDiff >= -ALLOWABLE_DELAY) { //Don't join meeting if a certain amount of time after the meeting start time has passed
+                    System.out.println("Opened link for next meeting.\r\n");
+                    
                     String command = (isWindowsOS ? WINDOWS_CHROME_CMD : MAC_CHROME_CMD) + link;
                     (new ProcessBuilder()).command(command.split(" ")).start().waitFor();
-
-                    System.out.println("Opened link for next meeting.");
                 }
 
             } catch (Exception e) {
