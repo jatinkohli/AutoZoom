@@ -31,7 +31,7 @@ public class Main {
     private static final int ALLOWABLE_DELAY = 380; // Time after the meeting starts where you will join automatically
 
     private static final String WINDOWS_CHROME_CMD = "Chrome ";
-    private static final String MAC_CHROME_CMD = "open -a \"Google Chrome\" ";
+    private static final String MAC_CHROME_CMD = "bash -c google-chrome ";
 
     private static Map<String, String> periodLinks;
     private static Queue<QueueElement> linkQueue;
@@ -148,11 +148,10 @@ public class Main {
 
                 if (timeDiff >= -ALLOWABLE_DELAY) { //Don't join meeting if a certain amount of time after the meeting start time has passed
                     String command = (isWindowsOS ? WINDOWS_CHROME_CMD : MAC_CHROME_CMD) + link;
-
                     (new ProcessBuilder()).command(command.split(" ")).start().waitFor();
-                }
 
-                System.out.println("Opened link for next meeting.");
+                    System.out.println("Opened link for next meeting.");
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
