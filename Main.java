@@ -158,6 +158,8 @@ public class Main {
             }
         }
 
+        System.out.println("No more meetings today :)");
+
         System.exit(0);
     }
 }
