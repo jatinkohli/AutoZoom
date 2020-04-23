@@ -30,7 +30,7 @@ public class Main {
     private static final int OFFSET = 120; // Time (seconds) to join a meeting before the scheduled time
     private static final int ALLOWABLE_DELAY = 380; // Time after the meeting starts where you will join automatically
 
-    private static final String WINDOWS_CHROME_CMD = "start Chrome ";
+    private static final String WINDOWS_CHROME_CMD = "Chrome ";
     private static final String MAC_CHROME_CMD = "open -a \"Google Chrome\" ";
 
     private static Map<String, String> periodLinks;
