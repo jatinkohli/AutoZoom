@@ -131,6 +131,7 @@ public class Main {
 
         boolean isWindowsOS = System.getProperty("os.name").toLowerCase().indexOf("win") != -1;
         System.out.println("OS: " + System.getProperty("os.name"));
+        System.out.println(linkQueue.size() + " meetings today!\r\n");
 
         while (!linkQueue.isEmpty()) {
             currentTime = LocalTime.now().toSecondOfDay();
